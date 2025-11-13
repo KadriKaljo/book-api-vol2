@@ -1,4 +1,4 @@
-import express from "express";
+import express from "express";                          // liigub ülevalt alla 
 import bookRoutes from './routes/book.routes.js';   
 
 const app = express();
@@ -8,7 +8,8 @@ app.get("/welcome", (request, response) => {
   response.send("Welcome to the server!");
 });
 
-app.use(bookRoutes);     //app.use on middleware kasutamiseks, ütleme et kasuta siit failist midagi. 
+app.use('/api/v1', bookRoutes);     //app.use on middleware kasutamiseks, ütleme et kasuta siit failist midagi. 
+                                  // prefix on see app/v1
 
 
 app.listen(PORT, () => {

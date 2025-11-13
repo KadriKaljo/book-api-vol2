@@ -4,7 +4,11 @@ import { getAllBooks, getBookById, createBook, updateBook, deleteBook } from '..
 const router = Router(); // lokaalne muutuja
 
 router.get('/books', getAllBooks);           //kõikide raamatute toomine
-router.get('/books/:id', getBookById)   //üksiku raamatu toomine, koolon tähendab dünaamilisust
+// https://raamatupood.ee/api/v1/books/(:id) => 838383 kontrollime kas sellle id-ga raamat on olemas. Endpoint URL
+
+router.get('/books/:id', getBookById)   //üksiku raamatu toomine, koolon tähendab dünaamilisust, sinna paneb klient numbri 
+// router.get('/books/:id/authors/:authirId);
+
 router.post('/books', createBook);      //create
 router.put('/books/:id', updateBook);      //muutmine
 router.delete('/books/:id', deleteBook);

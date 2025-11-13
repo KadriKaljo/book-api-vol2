@@ -27,7 +27,7 @@ model Author {                                     //many to many eeldab alati v
   updated_at DateTime @updatedAt
 }
 
-//vahetabel
+//vahetabel 
 model AuthorOnBook {
   id Int @id @default(autoincrement())
   book Book @relation(fields: [book_id], references: [id])
