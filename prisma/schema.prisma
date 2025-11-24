@@ -7,9 +7,8 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
-
 model Book {
-  id Int @id @default(autoincrement())
+    id Int @id @default(autoincrement())
   title String 
   description String
   thumbnail_url String                           // pildid amazoni üles, toome siise urliga
