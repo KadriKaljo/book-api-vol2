@@ -1,6 +1,6 @@
-export const validate = (schema) => {
+export const validate = (schema, source = 'body') => {
     return (request, response, next) => {
-        const { error } = schema.validate(request.body, {
+        const { error, value } = schema.validate(request[source], {
             abortEarly: false,
             stripUnknown: true,
             errors: {
@@ -10,22 +10,35 @@ export const validate = (schema) => {
             }
         });
 
-        if (!error) {
-            return next();
+        if(error) {
+            const errorBag = {};
+
+            error.details.forEach((detail) => {
+                errorBag[detail.path] = {
+                    message: detail.message,
+                };
+            });
+
+            return response.status(400).json({
+                message: "ValidationError",
+                errors: errorBag,
+            })
         }
 
-        const errorBag = error.details.reduce((acc, detail) => {
-            acc[detail.path[0]] = {
-                message: detail.message
-            };
+        if(source === 'query') {
+            Object.keys(value).forEach((key) => {
+                request.query[key] = value[key];
+            });
+        } else {
+            request[source] = value;
+        }
 
-            return acc;
-        }, {});
-
-        response.status(400).json({
-            message: "ValidationError",
-            errors: { ...errorBag }
-        })
+        next();
 
     };
 };
+
+export const validateBody = (schema) => validate(schema, 'body');
+export const validateQuery = (schema) => validate(schema, 'query');
+
+export default validate;
