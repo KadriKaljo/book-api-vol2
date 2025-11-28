@@ -21,7 +21,8 @@ model Book {
   description String
   thumbnail_url String                           // pildid amazoni üles, toome siise urliga
   release_year Int
-  authors AuthorOnBook[]                   
+  authors AuthorOnBook[] 
+  categories Category[]                  
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -34,7 +35,17 @@ model Author {                                     //many to many eeldab alati v
   updated_at DateTime @updatedAt
 }
 
-//vahetabel 
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @unique
+  books Book[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
+//* vahetabel  many to many
 model AuthorOnBook {
   id Int @id @default(autoincrement())
   book Book @relation(fields: [book_id], references: [id])
@@ -44,3 +55,5 @@ model AuthorOnBook {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+// peale andmebaasi muudatusi, teeme uue migratsiooni

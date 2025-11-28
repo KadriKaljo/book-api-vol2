@@ -1,5 +1,4 @@
 import prisma from '../config/prisma.config.js';
-
 import { QueryBuilder } from "../utils/QueryBuilder.js";
 
 export const getAllBooks = async (request, response) => {
@@ -10,7 +9,7 @@ export const getAllBooks = async (request, response) => {
             allowedSorts: ['id', 'title', 'description', 'created_at', 'updated_at'],
             allowedSearchFields: ['title', 'description'],
             allowedIncludes: {
-                'authors': { include: { author: true }}
+                'authors': { include: { author: true }} // kui keegi soovib leida booki jaoks kuuluvad authorid, nimed ja teised andmed, mitte ainult id
             }
         });
 

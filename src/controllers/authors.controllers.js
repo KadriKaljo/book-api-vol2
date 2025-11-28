@@ -1,14 +1,32 @@
 import prisma from '../config/prisma.config.js';
+import { QueryBuilder } from "../utils/QueryBuilder.js";
 
 export const getAllAuthors = async (request, response) => {
     try {
+        const Builder = new QueryBuilder(request.query, {
+            defaultSort: 'created_at',
+            defaultTake: 10,
+            allowedSorts: ['name', 'created_at'],
+            allowedSearchFields: ['name'],
+            allowedIncludes: {
+                'books': { include: { book: true }} //kui soovib leida autori jaoks kuuluvad bookid, nimed ja teised andmed, mitte ainult id
+            }
+        });
 
-        const authors = await prisma.author.findMany();
+        const prismaQuery = Builder.buildPrismaQuery();
 
-        response.json({
-            message: 'All authors',
-            data: authors
-        })
+        const [authors, count] = await Promise.all([
+            prisma.author.findMany(prismaQuery), //leiab autorid
+            prisma.author.count({ where: prismaQuery.where }) //kui palju autoreid kokku on. Kui tingimused peal (PrismaQuery)
+        ])
+
+        const meta = Builder.getPaginationMeta(count); //siia sisse anname counti
+
+        response.status(200).json({ //200 on OK, 404 on Not Found, 500 on Internal Server Error
+            message: 'All authors', //siia sisse anname message
+            data: authors, //siia sisse anname andmed
+            meta, //siia sisse anname meta
+        });
     } catch (exception) {
         console.log(exception);
         response.status(500).json({
